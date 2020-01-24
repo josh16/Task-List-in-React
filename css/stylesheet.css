@@ -1,0 +1,173 @@
+
+/*CSS custom style variables*/
+:root{
+    --def-orange-btn:#FFBB59;
+    --def-green-btn:#2ECC71;
+    --def-red-btn:#EC7063;
+    --hov-green-btn:#229954;
+    --window-black:#323232;
+}
+
+body{
+    background-color: var(--window-black);
+}
+
+h3{
+    text-align: center;
+}
+
+/* ~~LOGIN PAGE STYLING~~ */
+#login-screen-window{
+    display:block;
+    box-shadow: 1px 2px 8px white;
+    width:500px; height:360px;
+    margin:30px auto;
+    padding:15px;
+    box-shadow: 1px 2px 8px white;
+    border-radius: 5px;
+    color:white;
+    border:1px solid white;
+}
+
+#login-screen-window > h1{
+    text-align: center;
+    color:aqua;
+}
+
+#login-credentials{
+    display:block;
+    padding:15px;
+    text-align: center;
+    font-size: 20px;
+}
+.login-btn{
+    display: block;
+    color:white;
+    width:120px; height:45px;
+    margin:25px auto 0px auto;
+    font-size: 17px;
+    border-radius:5px;
+    background-color: lightseagreen;
+    box-shadow: 1px 2px 8px lightseagreen;
+}
+
+.login-btn:hover{
+    background-color: lawngreen;
+}
+.input-sty{
+    font-size: 14px;
+    padding:2px 0px 2px 3px;
+    border-radius: 3px;
+}
+
+/* ~~ END OF LOGIN PAGE STYLING~~ */
+
+/* ~~TASK LIST STYLING~~ */
+
+#task-list-main-window{
+    color: white;
+    display:block;
+    width:900px; 
+    margin:10px auto;
+}
+
+#task-list-main-window h1{
+    text-align: center;
+}
+
+#task-list-sec{
+    display: block;
+    width:500px; height:140px;
+    margin:10px auto;
+    border:1px solid white;
+    box-shadow: 1px 2px 8px white;
+    border-radius:5px;
+}
+
+#current-tasks{
+    display:block;
+    border:1px solid white;
+    box-shadow: 1px 2px 8px white;
+    border-radius:5px;
+    padding:5px;width:620px;
+    margin:50px auto 30px auto;
+    width:500px;
+}
+
+.cur-task-table{
+    display:block;
+    /*padding:5px 30px;*/
+    padding:5px 0px 5px 30px;
+    margin:10px auto;
+    text-align: center;
+}
+
+.cur-task-table > tbody{
+    display:block;
+    width:530px;
+    margin:0px auto;
+}
+
+.cur-task-table >td{
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cur-table-body{
+    border:1px solid black;
+    width:400px;
+}
+
+.add-task-item{
+    text-align: center;
+    padding:1px 3px;
+}
+
+#add-task-table{
+    display:block;
+    padding:2px 3px;
+    width:320px;
+    margin:2px auto;
+}
+
+/*Button colours*/
+.btn-sty{
+    width:80px;
+    border-radius:3px;
+}
+
+.add{
+    color:white;
+    background-color:green;
+}
+.add:hover{
+    background-color:var(--hov-green-btn); 
+}
+.delete{
+    color:white;
+    background-color:var(--def-red-btn);
+}
+.delete:hover{
+    background:red;
+}
+.edit{
+    color:white;
+    background-color: var(--def-orange-btn);
+}
+.edit:hover{
+    background-color: orange;
+}
+.logout{
+    height:30px;
+    font-size: 13px;
+    background-color: red;
+    color:white;
+    box-shadow: 1px 2px 8px white;
+}
+.logout:hover{
+    background-color: mediumvioletred;
+}
+/*END of button colours*/
+
+/* ~~END OFTASK LIST STYLING~~ */

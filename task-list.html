@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang = "en">
+    <head>
+        <title>Task List Screen</title>
+        <!--React unpkg packages-->
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+        <!--JS File-->
+         <script src="js/functions.js"></script>
+        <!--CSS File-->
+        <link href="css/stylesheet.css" rel="stylesheet">
+    </head>
+<body>
+    <div id="my-taskList-screen">
+    </div>
+    
+    <!--React code goes inside here-->
+    <script type="text/babel">
+
+        let url = "http://learn.evermight.net/johnlai/api/index.php";
+        
+        let valUser = getCookie("JoshTaskList");
+        let valPass = getCookie("passwd");
+
+        let testUser = "reactTest";
+        let testPass = '^Star^Burst^Cashew!!!';
+        
+        //Header Credentials
+        const header = {
+                "Authorization":testUser,
+                "Auth-Secret": testPass,
+                "Content-Type":"application/x-www-form-urlencoded" 
+            };
+
+        class TaskList extends React.Component{
+            constructor(props){
+            super(props);    
+
+               //State object
+                this.state = {
+                    "inputTask":[],
+                    "priorityLvl":[],
+                    "checkBoxInput":"off",
+                    "taskRow":[],
+                    "taskId":[]
+                }
+            }
+
+            //Method to refresh tasks lists after Adding and Deleting them.
+            refreshTasksList(){
+                let state = this.state;
+                this.setState(state);
+            
+                    //** GET API **
+                    fetch(url,{
+                        "method":"GET",
+                        "headers":header,
+                    })
+                    
+                    .then((response)=>{
+                        if(response.status == 200)
+                        console.log("Connected to API");
+                        return response.json();
+                    })
+                    
+                    .then((getResult)=>{
+                        console.log('GET DATA HAS BEEN CALLED');
+                        state.taskRow = getResult.data;   
+                            
+                        //Update/merge state
+                        this.setState(state);
+                           
+                    })
+                    .catch((err)=>{
+                        console.log("Error:" + err);        
+                    })  
+            }
+            
+            //Add Task event
+            addTask(evt){
+                let state = this.state;           
+                this.setState(state);
+                
+                //User must enter a valid input in order to add new task to list
+                if(this.state.inputTask == ""){
+                    alert("Please enter a valid input ");
+                }
+                
+                else{
+                    //POST data stored inside 'taskListData' variable
+                    let taskListData = `Task=${this.state.inputTask}&Priority=${this.state.priorityLvl}&Checkbox=${this.state.checkBoxInput}&id=${this.state.taskId}`;    
+                
+                    fetch(url,{
+                        "method":"POST",
+                        "headers":header,
+                        "body": taskListData
+                    })
+
+                    //Receive response
+                    .then((response)=>{
+                       if(response.status == 200)
+                           console.log("Connected to API");
+                           return response.json();
+                    })
+
+                    .then((result)=>{
+                        console.log(result);
+                        console.log("Data POST");
+
+                            //** GET API **
+                            fetch(url,{
+                                "method":"GET",
+                                "headers":header,
+                            })
+
+                            .then((response)=>{
+                                if(response.status == 200)
+                                console.log("Connected to API");
+                                return response.json();
+                            })
+
+                            .then((getResult)=>{
+                                console.log(getResult);
+                                console.log('GET successfull');
+                                state.taskRow = getResult.data;
+
+                                //Save 'id' to taskId state object property
+                                this.state.taskRow.map(item=>{
+                                    this.state.taskId = item.id;
+                                })
+                                
+                                this.setState(state);
+                            })
+                            .catch((err)=>{
+                                console.log("Error:" + err);        
+                            })  
+                    })
+
+                .catch((err)=>{
+                        console.log("Error:" + err);
+                    })
+                }
+            }
+            
+            //Delete Task event
+            deleteTask(id){
+                alert("TASK DELETED!");                
+                
+                /*Store the 'result' from GET into a variable*/
+                let url = "http://learn.evermight.net/johnlai/api/index.php";
+                
+                let taskListData = `id=${this.state.taskRow}&Priority=${this.state.priorityLvl}&Checkbox=${this.state.checkBoxInput}`;
+                
+                taskListData = `id=${id}`;
+                
+                fetch(url,{
+                    "method":"DELETE",
+                    "headers":header,
+                    "body":taskListData
+                })
+                    
+                .then((response)=>{
+                    if(response.status == 200)
+                        console.log("Connected to API");
+                        return response.json();
+                })
+                
+                .then((result)=>{
+                    console.log(result);
+                        if(result.status == "success"){
+                           this.refreshTasksList();
+                        }
+                        else{
+                            console.log("failed..");
+                        }
+                })
+                
+                .catch((err)=>{
+                    console.log("Error:" + err);        
+                })      
+            }
+            
+            //Edit task event
+            editTask(id){
+                console.log("Task edited!");
+            }
+            
+            //Logout button
+            logoutButton(evt){
+                fetch(url,{
+                    "method":"GET",
+                    "headers":header
+                })
+                
+                .then((response)=>{
+                    if(response.status == 200)
+                        console.log("Connected to API");
+                        return response.json();
+                })
+                
+                .then((result)=>{
+                    console.log(result);
+                    if(result.status == "success"){
+                        console.log("Login page successfully loaded");
+                         window.location.href = "login.html";
+                    }
+                    else{
+                        console.log("failed to load login page");
+                    }  
+                })
+                
+                 .catch((err)=>{
+                    console.log("Error:" + err);
+                })
+            }
+            
+            //After elements on page is rendered, call componentDidMount method
+            componentDidMount(){
+                this.refreshTasksList();
+            }
+            
+            //Render Method
+            render(){
+                return(
+                    <div id ="task-list-main-window">
+                        <button className = "btn-sty logout" onClick = {evt=>this.logoutButton(evt)}>LogOut</button>
+                        <h1>Task List</h1>
+                        <form id ="task-list-sec">
+                            <h3>Add Task</h3>
+                            <table id="add-task-table">
+                                <tbody className="add-task-item">
+                                    <tr>
+                                        <td><input onChange ={evt=>this.setState({"inputTask":evt.currentTarget.value})}  type="text" placeholder="Add task" maxLength ="20" ></input></td>
+                                        <td>
+                                            <select onChange={evt=>this.setState({"priorityLvl":evt.currentTarget.value})} id="select-option">
+                                                <option value="priority">Priority</option>
+                                                <option value = "High">High</option>
+                                                <option value = "Medium">Medium</option>
+                                                <option value = "Low">Low</option>
+                                            </select>
+                                        </td>
+                                        <td><input onChange ={evt=>this.setState({"checkBoxInput":evt.currentTarget.value})} type="checkbox" ></input></td>
+                                        <td><button onClick = {evt=>this.addTask(evt)} className=" btn-sty add" type="button">Add</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        
+                        <h1>Current Tasks</h1>    
+                        <div id="current-tasks">
+                            <table className ="cur-task-table">
+                                <tbody>
+                                    <tr>
+                                        <td><h3>Task</h3></td>
+                                        <td><h3>Priority</h3></td>
+                                        <td><h3>Status</h3></td>
+                                        <td><h3>Delete</h3></td>
+                                    </tr>
+                                        {this.state.taskRow.map((item,k)=>
+                                            <tr key ={k}><td>{item.content.Task}</td><td>{item.content.Priority}</td><td>{item.content.Checkbox}</td><td><button className ="btn-sty delete" onClick = {_=>this.deleteTask(item.id)}>Delete</button></td>
+                                            </tr>                           
+                                        )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )
+            }   
+        }
+    
+    ReactDOM.render(<TaskList />,document.getElementById('my-taskList-screen'));
+    </script>
+</body>
+    
+</html>

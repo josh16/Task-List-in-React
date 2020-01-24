@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>Login Menu</title>
+        <!--React unpkg packages-->
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+        <!--JS File-->
+        <script src="js/functions.js"></script>
+        <!--CSS File-->
+        <link href="css/stylesheet.css" rel="stylesheet">
+    </head>
+<body>
+    <div id="my-login-screen">
+    </div>
+    <!--React code goes inside here-->
+    <script type="text/babel">
+
+    //Login Screen
+    class LoginApp extends React.Component{
+        //Constructor
+        constructor(props){
+        super(props);    
+            
+        //State object
+        this.state = {
+            "valUser":"",
+            "valPass":"",
+            }
+        }
+          
+        //Check Username
+        submitUserName(evt){
+            let state = this.state;
+            state.valUser = evt.currentTarget.value;
+            //Save/update state object property
+            this.setState(state);
+        }
+
+        //Check password
+        submitPassword(evt){
+            //Create State Object
+            let state = this.state;
+            state.valPass = evt.currentTarget.value;
+            this.setState(state);
+        }
+        
+        //Login user event
+        validateLogin(evt){
+            //Create state object
+            let state = this.state;
+
+            //Login server 
+            let url = "http://learn.evermight.net/johnlai/api/login";
+            
+            //Header Credentials
+            const header = {
+                "Authorization":this.state.valUser,
+                "Auth-Secret": this.state.valPass,
+                "Content-Type":"application/x-www-form-urlencoded" 
+            };
+            
+            //Save state
+            this.setState(state);
+            
+            //******** FETCH URL DATA *********
+            fetch(url,{
+                "method":"GET",
+                "headers":header
+            })
+            
+            .then((response)=>{
+                 if(response.status == 200)
+                    console.log("Connected to API");
+                    return response.json();
+            })
+            
+            //Load new page if successful
+            .then((result)=>{
+                console.log(result);
+
+                if(result.status == "success"){
+                    alert("Proceed to login");
+                    saveUser(this.state.valUser,this.state.valPass);
+                    window.location.href = "task-list.html";
+                }
+                else{
+                    alert("Wrong Username or Password");
+                }                    
+            })
+            
+            .catch((err)=>{
+                console.log("Error:" + err);
+            })
+            
+        }
+        render(){
+            return(
+                <div id="login-screen-window">
+                    <h1>Login</h1>
+                    <section id="login-credentials">
+                        <p>Username</p>
+                        <input className="input-sty" onChange={evt=>this.submitUserName(evt)} type="text"  placeholder="username"></input>
+                        
+                        <p>Password</p>
+                         <input className="input-sty" onChange={evt=>this.submitPassword(evt)} type="password" placeholder="password"></input>
+                        
+                        <button className="login-btn" onClick = {evt=>this.validateLogin(evt)}>Enter</button>
+                    </section>
+                </div>
+            )    
+        }   
+    }
+    ReactDOM.render(<LoginApp/>,document.getElementById('my-login-screen'));
+    </script>
+</body>
+</html>
